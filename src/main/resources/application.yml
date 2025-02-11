@@ -1,3 +1,26 @@
 spring:
-  application:
-    name: sharkbox-api
+    application:
+        name: sharkbox-api
+
+    datasource:
+        url: jdbc:postgresql://localhost/sharkbox
+        username: postgres
+        password: mysecretpassword
+        driver-class-name: org.postgresql.Driver
+
+    security:
+        user:
+            name: user
+            password: password
+
+    jpa:
+        open-in-view: false
+        properties:
+            # Temporary
+            jakarta.persistence.schema-generation.create-source: metadata
+            jakarta.persistence.schema-generation.scripts.action: create
+            jakarta.persistence.schema-generation.scripts.create-target: ddl.sql
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html

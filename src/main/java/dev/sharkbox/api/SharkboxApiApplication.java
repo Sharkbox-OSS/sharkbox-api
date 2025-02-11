@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class SharkboxApiApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SharkboxApiApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(SharkboxApiApplication.class, args);
+    }
 
 }
