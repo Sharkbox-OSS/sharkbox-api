@@ -15,9 +15,10 @@
 	<description>Sharkbox Backend API</description>
 	<distributionManagement>
 		<repository>
-		<id>github</id>
-		<name>GitHub Packages</name>
-		<url>https://maven.pkg.github.com/Sharkbox-OSS/sharkbox-api</url>
+			<id>github</id>
+			<name>GitHub Packages</name>
+			<url>https://maven.pkg.github.com/Sharkbox-OSS/sharkbox-api</url>
+			<enabled>true</enabled>
 		</repository>
 	</distributionManagement>
 	<properties>
