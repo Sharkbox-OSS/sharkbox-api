@@ -13,6 +13,13 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>sharkbox-api</name>
 	<description>Sharkbox Backend API</description>
+	<distributionManagement>
+		<repository>
+		<id>github</id>
+		<name>GitHub Packages</name>
+		<url>https://maven.pkg.github.com/Sharkbox-OSS/sharkbox-api</url>
+		</repository>
+	</distributionManagement>
 	<properties>
 		<java.version>21</java.version>
 
