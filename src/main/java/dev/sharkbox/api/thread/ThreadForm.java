@@ -13,8 +13,6 @@ public class ThreadForm {
     @NotBlank
     private String content;
 
-    private Long boxId;
-
     public String getTitle() {
         return title;
     }
@@ -37,13 +35,5 @@ public class ThreadForm {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public Long getBoxId() {
-        return boxId;
-    }
-
-    public void setBoxId(Long boxId) {
-        this.boxId = boxId;
     }
 }

@@ -1,5 +1,33 @@
 ---
 services:
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.1.1
+    ports:
+      - 9080:8080
+    volumes:
+      - ./keycloak/sharkbox-realm.json:/opt/keycloak/data/import/sharkbox-realm.json
+    command: ["start-dev", "--import-realm"]
+    environment:
+      TZ: America/Chicago
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://authdb:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: password
+
+  authdb:
+    image: postgres:17
+    volumes:
+      - authdb-data:/var/lib/postgresql/data
+    restart: always
+    environment:
+      TZ: America/Chicago
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: keycloak
+      POSTGRES_DB: keycloak
+
   postgres:
     image: postgres:17
     environment:
@@ -8,5 +36,9 @@ services:
       POSTGRES_PASSWORD: mysecretpassword
     ports:
       - "5432:5432"
-    #volumes:
-    #  - sharkbox-postgres:/var/lib/postgresql/data
+    volumes:
+      - sharkbox-postgres:/var/lib/postgresql/data
+
+volumes:
+  authdb-data:
+  sharkbox-postgres:

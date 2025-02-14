@@ -1,10 +1,8 @@
 package dev.sharkbox.api;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class SharkboxApiApplicationTests {
+class SharkboxApiApplicationTests extends SharkboxApiTestBase {
 
 	@Test
 	void contextLoads() {

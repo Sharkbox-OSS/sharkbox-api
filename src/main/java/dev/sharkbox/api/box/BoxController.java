@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +32,12 @@ public class BoxController {
     @Operation(summary = "Retrieve all boxes")
     public List<Box> retrieveBoxes() {
         return boxService.retrieveBoxes();
+    }
+
+    @GetMapping("/{slug}")
+    @Operation(summary = "Retrieve a box")
+    public Optional<Box> retrieveBox(@PathVariable String slug) {
+        return boxService.retrieveBox(slug);
     }
 
     @PostMapping
