@@ -13,11 +13,11 @@ spring:
 
     jpa:
         open-in-view: false
-        properties:
+        # properties:
             # Temporary
-            jakarta.persistence.schema-generation.create-source: metadata
-            jakarta.persistence.schema-generation.scripts.action: create
-            jakarta.persistence.schema-generation.scripts.create-target: ddl.sql
+            # jakarta.persistence.schema-generation.create-source: metadata
+            # jakarta.persistence.schema-generation.scripts.action: create
+            # jakarta.persistence.schema-generation.scripts.create-target: ddl.sql
 
 springdoc:
   api-docs:
