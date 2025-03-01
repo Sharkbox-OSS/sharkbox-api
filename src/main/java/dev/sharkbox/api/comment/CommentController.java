@@ -2,6 +2,8 @@ package dev.sharkbox.api.comment;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,18 +37,24 @@ public class CommentController {
     }
 
     @PostMapping("/{threadId}")
+    @PreAuthorize("isAuthenticated()")
+    @ResponseStatus(code = HttpStatus.CREATED)
     @Operation(summary = "Create a comment in a thread")
     public Comment createComment(@RequestBody @Valid CommentForm commentForm, @PathVariable Long threadId) {
         return commentService.createComment(commentForm, threadId);
     }
 
     @PutMapping("/{threadId}/{commentId}")
+    @PreAuthorize("isAuthenticated()")
+    @ResponseStatus(code = HttpStatus.OK)
     @Operation(summary = "Update a comment in a thread")
     public Comment updateComment(@RequestBody @Valid CommentForm commentForm, @PathVariable Long threadId, @PathVariable Long commentId) {
         return commentService.updateComment(commentForm, threadId, commentId);
     }
 
     @PatchMapping("/{threadId}/{commentId}")
+    @PreAuthorize("isAuthenticated()")
+    @ResponseStatus(code = HttpStatus.OK)
     @Operation(summary = "Vote on a comment")
     public Comment voteOnComment(@PathVariable Long threadId, @PathVariable Long commentId, @RequestBody @Valid CommentVoteForm commentVoteForm) {
         return commentService.voteOnComment(threadId, commentId, commentVoteForm);

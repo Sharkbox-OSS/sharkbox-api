@@ -15,10 +15,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtDecoders;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
 import dev.sharkbox.api.auth.AuthConfig;
+import dev.sharkbox.api.security.GrantedAuthoritiesExtractor;
+import dev.sharkbox.api.security.SharkboxUserAuthenticationConverter;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -26,6 +27,7 @@ import io.swagger.v3.oas.annotations.security.OAuthFlow;
 import io.swagger.v3.oas.annotations.security.OAuthFlows;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Configuration
 @EnableWebSecurity(debug = true)
@@ -55,24 +57,28 @@ public class SharkboxConfiguration {
     private final Logger logger = LoggerFactory.getLogger(SharkboxConfiguration.class);
 
     private final AuthConfig authConfig;
+    private final HttpServletRequest request;
 
-    SharkboxConfiguration(final AuthConfig authConfig) {
+    SharkboxConfiguration(final AuthConfig authConfig, final HttpServletRequest request) {
         this.authConfig = authConfig;
+        this.request = request;
     }
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
             .authorizeHttpRequests(request -> request
+                // Docs
                 .requestMatchers(
                     "/api/v1/auth/config",
                     "/api/docs/**"
                 ).permitAll()
-                .anyRequest().authenticated()
+                // Most requests are public, we'll have to check auth for specific requests
+                .anyRequest().permitAll()
             )
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(grantedAuthoritiesExtractor())))
+            .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(sharkboxAuthenticationConverter())))
             .build();
     }
 
@@ -85,9 +91,7 @@ public class SharkboxConfiguration {
         return JwtDecoders.fromOidcIssuerLocation(authConfig.getStsServer());
     }
 
-    private Converter<Jwt, AbstractAuthenticationToken> grantedAuthoritiesExtractor() {
-        var jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new GrantedAuthoritiesExtractor(authConfig));
-        return jwtAuthenticationConverter;
+    private Converter<Jwt, AbstractAuthenticationToken> sharkboxAuthenticationConverter() {
+        return new SharkboxUserAuthenticationConverter(new GrantedAuthoritiesExtractor(authConfig), request);
     }
 }

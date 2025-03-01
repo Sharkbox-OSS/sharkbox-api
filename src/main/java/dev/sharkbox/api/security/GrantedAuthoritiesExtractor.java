@@ -1,4 +1,4 @@
-package dev.sharkbox.api;
+package dev.sharkbox.api.security;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -18,7 +18,7 @@ public class GrantedAuthoritiesExtractor implements Converter<Jwt, Collection<Gr
 
     private final AuthConfig authConfig;
 
-    GrantedAuthoritiesExtractor(final AuthConfig authConfig) {
+    public GrantedAuthoritiesExtractor(final AuthConfig authConfig) {
         this.authConfig = authConfig;
     }
 

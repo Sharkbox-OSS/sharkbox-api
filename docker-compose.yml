@@ -16,12 +16,13 @@ services:
       KC_DB_URL: jdbc:postgresql://authdb:5432/keycloak
       KC_DB_USERNAME: keycloak
       KC_DB_PASSWORD: password
+    restart: unless-stopped
 
   authdb:
     image: postgres:17
     volumes:
       - authdb-data:/var/lib/postgresql/data
-    restart: always
+    restart: unless-stopped
     environment:
       TZ: America/Chicago
       POSTGRES_PASSWORD: password
@@ -38,6 +39,7 @@ services:
       - "5432:5432"
     volumes:
       - sharkbox-postgres:/var/lib/postgresql/data
+    restart: unless-stopped
 
 volumes:
   authdb-data:
