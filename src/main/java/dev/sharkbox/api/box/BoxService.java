@@ -33,7 +33,7 @@ public class BoxService {
     Box createBox(BoxForm form) {
         var box = new Box();
         box.setName(form.getName());
-        box.setSlug(form.getSlug());
+        box.setSlug(form.getSlug().toLowerCase());
         box.setDescription(form.getDescription());
         box.setAccess(form.getAccess());
         box.setCreatedAt(OffsetDateTime.now((ZoneOffset.UTC)));

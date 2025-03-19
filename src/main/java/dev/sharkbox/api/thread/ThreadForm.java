@@ -11,7 +11,7 @@ public class ThreadForm {
     private ThreadType type;
 
     @NotBlank
-    private byte[] content;
+    private String content;
 
     public String getTitle() {
         return title;
@@ -29,11 +29,11 @@ public class ThreadForm {
         this.type = type;
     }
 
-    public byte[] getContent() {
+    public String getContent() {
         return content;
     }
 
-    public void setContent(byte[] content) {
+    public void setContent(String content) {
         this.content = content;
     }
 }

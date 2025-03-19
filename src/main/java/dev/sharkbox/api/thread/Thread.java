@@ -31,7 +31,7 @@ public class Thread {
 
     @NotBlank
     @Lob
-    private byte[] content;
+    private String content;
 
     private String mimeType;
 
@@ -75,11 +75,11 @@ public class Thread {
         this.type = type;
     }
 
-    public byte[] getContent() {
+    public String getContent() {
         return content;
     }
 
-    public void setContent(byte[] content) {
+    public void setContent(String content) {
         this.content = content;
     }
 

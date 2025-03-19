@@ -17,7 +17,7 @@ create table thread (
     created_at timestamp(6) with time zone not null,
     updated_at timestamp(6) with time zone,
     type smallint not null check (type between 0 and 4),
-    content bytea not null,
+    content text not null,
     mime_type varchar(255), 
     description varchar(255),
     title varchar(255) not null,

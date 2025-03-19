@@ -9,6 +9,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Service;
 
 import dev.sharkbox.api.box.BoxService;
+import jakarta.transaction.Transactional;
 
 @Service
 public class ThreadService {
@@ -21,11 +22,13 @@ public class ThreadService {
         this.boxService = boxService;
     }
 
+    @Transactional
     public Optional<Thread> retrieveThread(Long id) {
         // TODO permissions
         return threadRepository.findById(id);
     }
 
+    @Transactional
     List<Thread> retrieveThreads(String boxSlug) {
         return boxService.retrieveBox(boxSlug).map(box -> threadRepository.findByBox(box)).orElseThrow();
     }
