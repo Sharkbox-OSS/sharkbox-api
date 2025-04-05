@@ -40,6 +40,9 @@ public class Box {
     private OffsetDateTime updatedAt;
 
     @NotNull
+    private String owner;
+
+    @NotNull
     private BoxAccess access;
 
     public Long getId() {
@@ -88,6 +91,14 @@ public class Box {
 
     public void setUpdatedAt(OffsetDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
     public BoxAccess getAccess() {

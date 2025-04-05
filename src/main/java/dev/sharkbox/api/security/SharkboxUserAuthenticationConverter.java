@@ -21,13 +21,14 @@ public class SharkboxUserAuthenticationConverter implements Converter<Jwt, Abstr
     @Override
     public AbstractAuthenticationToken convert(Jwt source) {
         var authorities = this.jwtGrantedAuthoritiesExtractor.convert(source);
-        var given_name = source.getClaimAsString("given_name");
-        var family_name = source.getClaimAsString("family_name");
+        var givenName = source.getClaimAsString("given_name");
+        var familyName = source.getClaimAsString("family_name");
         var email = source.getClaimAsString("email");
         var username = source.getClaimAsString("preferred_username");
+        //var tokenSub = source.getClaimAsString("sub");
 
         var ipAddress = Optional.ofNullable(request.getRemoteAddr()).orElse("UNKNOWN");
 
-        return new SharkboxAuthenticationToken(source, authorities, username, email, given_name, family_name, ipAddress);
+        return new SharkboxAuthenticationToken(source, authorities, username, email, givenName, familyName, ipAddress);
     }
 }

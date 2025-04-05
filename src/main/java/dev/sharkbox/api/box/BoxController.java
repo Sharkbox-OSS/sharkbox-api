@@ -49,7 +49,7 @@ public class BoxController {
     @ResponseStatus(code = HttpStatus.CREATED)
     @Operation(summary = "Create a box")
     public Box createBox(@AuthenticationPrincipal SharkboxUser user, @RequestBody @Valid BoxForm form) {
-        return boxService.createBox(form);
+        return boxService.createBox(form, user);
     }
 
     @PutMapping("/{slug}")

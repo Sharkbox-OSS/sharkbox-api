@@ -7,6 +7,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import dev.sharkbox.api.security.SharkboxUser;
+
 @Service
 public class BoxService {
     
@@ -30,13 +32,14 @@ public class BoxService {
         return boxRepository.findBySlug(slug);
     }
 
-    Box createBox(BoxForm form) {
+    Box createBox(BoxForm form, SharkboxUser user) {
         var box = new Box();
         box.setName(form.getName());
         box.setSlug(form.getSlug().toLowerCase());
         box.setDescription(form.getDescription());
         box.setAccess(form.getAccess());
         box.setCreatedAt(OffsetDateTime.now((ZoneOffset.UTC)));
+        box.setOwner(user.getUsername());
         return boxRepository.save(box);
     }
 

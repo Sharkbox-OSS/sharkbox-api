@@ -6,6 +6,7 @@ create table box (
     description varchar(255) not null,
     slug varchar(255) not null,
     name varchar(255) not null,
+    owner varchar(255) not null,
     primary key (id),
     unique (slug)
 );
