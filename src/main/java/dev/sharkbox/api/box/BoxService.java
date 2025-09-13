@@ -40,6 +40,7 @@ public class BoxService {
         box.setAccess(form.getAccess());
         box.setCreatedAt(OffsetDateTime.now((ZoneOffset.UTC)));
         box.setOwner(user.getUsername());
+        // TODO throw 400 if slug already exists
         return boxRepository.save(box);
     }
 
