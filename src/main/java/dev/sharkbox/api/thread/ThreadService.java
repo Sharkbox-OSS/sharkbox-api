@@ -2,10 +2,11 @@ package dev.sharkbox.api.thread;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import dev.sharkbox.api.box.BoxService;
@@ -29,8 +30,8 @@ public class ThreadService {
     }
 
     @Transactional
-    List<Thread> retrieveThreads(String boxSlug) {
-        return boxService.retrieveBox(boxSlug).map(box -> threadRepository.findByBox(box)).orElseThrow();
+    public Page<Thread> retrieveThreads(String boxSlug, Pageable pageable) {
+        return boxService.retrieveBox(boxSlug).map(box -> threadRepository.findByBox(box, pageable)).orElseThrow();
     }
 
     Thread createThread(ThreadForm form, String boxSlug) {

@@ -8,9 +8,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
-import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,11 +55,10 @@ public class ThreadController {
         return threadService.updateThread(form, slug, id);
     }
 
-    // TODO this needs to be paginated
     @GetMapping("/box/{slug}/threads")
     @Operation(summary = "Retrieve threads in a box")
-    List<Thread> retrieveThreads(@PathVariable String slug) {
-        return threadService.retrieveThreads(slug);
+    public Page<Thread> retrieveThreads(@PathVariable String slug, Pageable pageable) {
+        return threadService.retrieveThreads(slug, pageable);
     }
 
     @PatchMapping("/thread/{id}")
