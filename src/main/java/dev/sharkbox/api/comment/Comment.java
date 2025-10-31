@@ -2,6 +2,7 @@ package dev.sharkbox.api.comment;
 
 import java.time.OffsetDateTime;
 
+import dev.sharkbox.api.vote.VotableEntity;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,7 +14,7 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "comment")
-public class Comment {
+public class Comment extends VotableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +24,7 @@ public class Comment {
     private Long parentId;
 
     @NotNull
-    private Long userId;
+    private String userId;
 
     @NotNull
     private Long threadId;
@@ -53,11 +54,11 @@ public class Comment {
         this.parentId = parentId;
     }
 
-    public Long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

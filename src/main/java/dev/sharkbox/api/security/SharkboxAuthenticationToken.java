@@ -13,8 +13,8 @@ public class SharkboxAuthenticationToken extends AbstractOAuth2TokenAuthenticati
 
     private static final long serialVersionUID = 1L;
 
-    public SharkboxAuthenticationToken(Jwt token, Collection<? extends GrantedAuthority> authorities, String username, String emailAddress, String givenName, String familyName, String ipAddress) {
-        super(token, new SharkboxUser(username, emailAddress, givenName, familyName, ipAddress, authorities), null, authorities);
+    public SharkboxAuthenticationToken(Jwt token, Collection<? extends GrantedAuthority> authorities, String userId, String username, String emailAddress, String givenName, String familyName, String ipAddress) {
+        super(token, new SharkboxUser(userId, username, emailAddress, givenName, familyName, ipAddress, authorities), null, authorities);
         this.setAuthenticated(true);
     }
 

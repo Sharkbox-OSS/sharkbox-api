@@ -25,10 +25,14 @@ public class SharkboxUserAuthenticationConverter implements Converter<Jwt, Abstr
         var familyName = source.getClaimAsString("family_name");
         var email = source.getClaimAsString("email");
         var username = source.getClaimAsString("preferred_username");
-        //var tokenSub = source.getClaimAsString("sub");
+        var tokenSub = source.getClaimAsString("sub");
+        
+        // Use 'sub' claim directly as userId (UUID from Keycloak)
+        // TODO: should we Fallback to username if sub is not available?
+        var userId = tokenSub != null ? tokenSub : username;
 
         var ipAddress = Optional.ofNullable(request.getRemoteAddr()).orElse("UNKNOWN");
 
-        return new SharkboxAuthenticationToken(source, authorities, username, email, givenName, familyName, ipAddress);
+        return new SharkboxAuthenticationToken(source, authorities, userId, username, email, givenName, familyName, ipAddress);
     }
 }

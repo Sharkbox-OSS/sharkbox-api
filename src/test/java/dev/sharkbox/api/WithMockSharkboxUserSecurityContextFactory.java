@@ -20,6 +20,7 @@ class WithMockSharkboxUserSecurityContextFactory implements WithSecurityContextF
         var auth = new SharkboxAuthenticationToken(
             Mockito.mock(Jwt.class),
             Arrays.stream(mockUser.roles()).map(SimpleGrantedAuthority::new).toList(),
+            mockUser.userId(),
             mockUser.username(),
             mockUser.emailAddress(),
             mockUser.givenName(),

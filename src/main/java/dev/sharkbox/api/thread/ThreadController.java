@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import dev.sharkbox.api.security.SharkboxUser;
+import dev.sharkbox.api.vote.VoteForm;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -35,37 +38,37 @@ public class ThreadController {
 
     @GetMapping("/thread/{id}")
     @Operation(summary = "Retrieve a thread by ID")
-    public Optional<Thread> retrieveThread(@PathVariable Long id) {
-        return threadService.retrieveThread(id);
+    public Optional<Thread> retrieveThread(@PathVariable Long id, @AuthenticationPrincipal SharkboxUser user) {
+        return threadService.retrieveThread(id, user);
     }
 
     @PostMapping("/box/{slug}/thread")
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(code = HttpStatus.CREATED)
     @Operation(summary = "Create a thread in a box")
-    public Thread createThread(@RequestBody @Valid ThreadForm form, @PathVariable String slug) {
-        return threadService.createThread(form, slug);
+    public Thread createThread(@RequestBody @Valid ThreadForm form, @PathVariable String slug, @AuthenticationPrincipal SharkboxUser user) {
+        return threadService.createThread(form, slug, user);
     }
 
     @PutMapping("/thread/{id}")
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(code = HttpStatus.OK)
-    @Operation(summary = "Update a thread in a box")
-    public Thread updateThread(@RequestBody @Valid ThreadForm form, @PathVariable String slug, @PathVariable Long id) {
-        return threadService.updateThread(form, slug, id);
+    @Operation(summary = "Update a thread")
+    public Thread updateThread(@RequestBody @Valid ThreadForm form, @PathVariable Long id) {
+        return threadService.updateThread(form, null, id);
     }
 
     @GetMapping("/box/{slug}/threads")
     @Operation(summary = "Retrieve threads in a box")
-    public Page<Thread> retrieveThreads(@PathVariable String slug, Pageable pageable) {
-        return threadService.retrieveThreads(slug, pageable);
+    public Page<Thread> retrieveThreads(@PathVariable String slug, Pageable pageable, @AuthenticationPrincipal SharkboxUser user) {
+        return threadService.retrieveThreads(slug, pageable, user);
     }
 
     @PatchMapping("/thread/{id}")
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(code = HttpStatus.OK)
     @Operation(summary = "Vote on a thread")
-    public Thread voteOnThread(@PathVariable Long id, @RequestBody @Valid ThreadVoteForm form) {
-        return threadService.voteOnThread(id, form);
+    public Thread voteOnThread(@PathVariable Long id, @RequestBody @Valid VoteForm form, @AuthenticationPrincipal SharkboxUser user) {
+        return threadService.voteOnThread(id, form, user);
     }
 }

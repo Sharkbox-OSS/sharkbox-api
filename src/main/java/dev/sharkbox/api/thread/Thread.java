@@ -3,6 +3,7 @@ package dev.sharkbox.api.thread;
 import java.time.OffsetDateTime;
 
 import dev.sharkbox.api.box.Box;
+import dev.sharkbox.api.vote.VotableEntity;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,7 +18,7 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "thread")
-public class Thread {
+public class Thread extends VotableEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,9 +38,9 @@ public class Thread {
 
     private String description;
 
-    // TODO link to a user object?
+
     @NotNull
-    private Long userId;
+    private String userId;
 
     @NotNull
     private OffsetDateTime createdAt;
@@ -99,11 +100,11 @@ public class Thread {
         this.description = description;
     }
 
-    public Long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

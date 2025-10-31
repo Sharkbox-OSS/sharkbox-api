@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class SharkboxUser implements UserDetails {
+    private String userId;
     private String username;
     private String emailAddress;
     private String givenName;
@@ -13,7 +14,8 @@ public class SharkboxUser implements UserDetails {
     private Collection<? extends GrantedAuthority> roles;
     private String ipAddress;
 
-    public SharkboxUser(String username, String emailAddress, String givenName, String familyName, String ipAddress, Collection<? extends GrantedAuthority> roles) {
+    public SharkboxUser(String userId, String username, String emailAddress, String givenName, String familyName, String ipAddress, Collection<? extends GrantedAuthority> roles) {
+        this.userId = userId;
         this.username = username;
         this.emailAddress = emailAddress;
         this.givenName = givenName;
@@ -71,5 +73,13 @@ public class SharkboxUser implements UserDetails {
 
     public String getIpAddress() {
         return ipAddress;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

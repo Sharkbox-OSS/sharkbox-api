@@ -4,37 +4,45 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Optional;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import dev.sharkbox.api.box.BoxService;
+import dev.sharkbox.api.exception.EntityNotFoundException;
+import dev.sharkbox.api.security.SharkboxUser;
+import dev.sharkbox.api.vote.VoteForm;
+import dev.sharkbox.api.vote.VoteService;
 import jakarta.transaction.Transactional;
 
 @Service
 public class ThreadService {
     
     private final ThreadRepository threadRepository;
+    private final VoteService voteService;
     private final BoxService boxService;
 
-    ThreadService(ThreadRepository threadRepository, BoxService boxService) {
+    ThreadService(ThreadRepository threadRepository, VoteService voteService, BoxService boxService) {
         this.threadRepository = threadRepository;
+        this.voteService = voteService;
         this.boxService = boxService;
     }
 
     @Transactional
-    public Optional<Thread> retrieveThread(Long id) {
+    public Optional<Thread> retrieveThread(Long id, SharkboxUser user) {
         // TODO permissions
-        return threadRepository.findById(id);
+        return threadRepository.findById(id).map(thread -> 
+            voteService.populateVoteData(thread, "thread", user.getUserId()));
     }
 
     @Transactional
-    public Page<Thread> retrieveThreads(String boxSlug, Pageable pageable) {
-        return boxService.retrieveBox(boxSlug).map(box -> threadRepository.findByBox(box, pageable)).orElseThrow();
+    public Page<Thread> retrieveThreads(String boxSlug, Pageable pageable, SharkboxUser user) {
+        return boxService.retrieveBox(boxSlug).map(box -> threadRepository.findByBox(box, pageable)
+            .map(thread -> voteService.populateVoteData(thread, "thread", user.getUserId()))
+        ).orElseThrow();
     }
 
-    Thread createThread(ThreadForm form, String boxSlug) {
+    Thread createThread(ThreadForm form, String boxSlug, SharkboxUser user) {
         // TODO need to make sure we are allowed to create a thread in this box
         return boxService.retrieveBox(boxSlug).map(box -> {
             var thread = new Thread();
@@ -43,8 +51,7 @@ public class ThreadService {
             thread.setTitle(form.getTitle());
             thread.setType(form.getType());
             thread.setBox(box);
-            // TODO user auth
-            thread.setUserId(1L);
+            thread.setUserId(user.getUserId());
             return threadRepository.save(thread);
         }).orElseThrow();
     }
@@ -60,9 +67,11 @@ public class ThreadService {
         }).orElseThrow();
     }
 
-    Thread voteOnThread(Long id, ThreadVoteForm form) {
-        // TODO implement voting
-        // Make sure you can't vote more than once
-        throw new NotImplementedException();
+    @Transactional
+    public Thread voteOnThread(Long id, VoteForm form, SharkboxUser user) {
+        var thread = threadRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Thread", id));
+        
+        return voteService.voteOnEntity(thread, "thread", form, user.getUserId());
     }
+    
 }

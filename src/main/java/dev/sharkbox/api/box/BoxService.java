@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import dev.sharkbox.api.exception.DuplicateSlugException;
 import dev.sharkbox.api.security.SharkboxUser;
 
 @Service
@@ -33,14 +34,19 @@ public class BoxService {
     }
 
     Box createBox(BoxForm form, SharkboxUser user) {
+        var slug = form.getSlug().toLowerCase();
+        
+        if (boxRepository.findBySlug(slug).isPresent()) {
+            throw new DuplicateSlugException(slug);
+        }
+        
         var box = new Box();
         box.setName(form.getName());
-        box.setSlug(form.getSlug().toLowerCase());
+        box.setSlug(slug);
         box.setDescription(form.getDescription());
         box.setAccess(form.getAccess());
         box.setCreatedAt(OffsetDateTime.now((ZoneOffset.UTC)));
-        box.setOwner(user.getUsername());
-        // TODO throw 400 if slug already exists
+        box.setOwner(user.getUserId());
         return boxRepository.save(box);
     }
 
