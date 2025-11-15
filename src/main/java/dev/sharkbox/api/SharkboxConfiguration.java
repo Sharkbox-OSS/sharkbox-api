@@ -1,5 +1,7 @@
 package dev.sharkbox.api;
 
+import java.util.Arrays;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -16,6 +18,10 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtDecoders;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 
 import dev.sharkbox.api.auth.AuthConfig;
 import dev.sharkbox.api.security.GrantedAuthoritiesExtractor;
@@ -30,9 +36,10 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity(debug = false)
 @EnableMethodSecurity(prePostEnabled = true)
 @EnableConfigurationProperties(AuthConfig.class)
+@EnableSpringDataWebSupport
 @OpenAPIDefinition(
     info = @Info(
         title = "Sharkbox API",
@@ -67,7 +74,7 @@ public class SharkboxConfiguration {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-            .authorizeHttpRequests(request -> request
+            .authorizeHttpRequests(requests -> requests
                 // Docs
                 .requestMatchers(
                     "/api/v1/auth/config",
@@ -76,10 +83,23 @@ public class SharkboxConfiguration {
                 // Most requests are public, we'll have to check auth for specific requests
                 .anyRequest().permitAll()
             )
+            .cors(cors -> cors.configure(http))
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(sharkboxAuthenticationConverter())))
             .build();
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        var configuration = new CorsConfiguration();
+        // TODO: Lock this down in production
+        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedMethods(Arrays.asList("*"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        var source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Bean

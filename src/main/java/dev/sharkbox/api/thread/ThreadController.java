@@ -10,8 +10,8 @@ import jakarta.validation.Valid;
 
 import java.util.Optional;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import dev.sharkbox.api.common.PageResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -60,8 +60,8 @@ public class ThreadController {
 
     @GetMapping("/box/{slug}/threads")
     @Operation(summary = "Retrieve threads in a box")
-    public Page<Thread> retrieveThreads(@PathVariable String slug, Pageable pageable, @AuthenticationPrincipal SharkboxUser user) {
-        return threadService.retrieveThreads(slug, pageable, user);
+    public PageResponse<Thread> retrieveThreads(@PathVariable String slug, Pageable pageable, @AuthenticationPrincipal SharkboxUser user) {
+        return PageResponse.of(threadService.retrieveThreads(slug, pageable, user));
     }
 
     @PatchMapping("/thread/{id}")

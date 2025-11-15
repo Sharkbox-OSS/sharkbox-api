@@ -32,13 +32,15 @@ public class ThreadService {
     public Optional<Thread> retrieveThread(Long id, SharkboxUser user) {
         // TODO permissions
         return threadRepository.findById(id).map(thread -> 
-            voteService.populateVoteData(thread, "thread", user.getUserId()));
+            user != null ? voteService.populateVoteData(thread, "thread", user.getUserId()) : thread);
     }
 
     @Transactional
     public Page<Thread> retrieveThreads(String boxSlug, Pageable pageable, SharkboxUser user) {
         return boxService.retrieveBox(boxSlug).map(box -> threadRepository.findByBox(box, pageable)
-            .map(thread -> voteService.populateVoteData(thread, "thread", user.getUserId()))
+            .map(thread -> user != null 
+                ? voteService.populateVoteData(thread, "thread", user.getUserId())
+                : thread)
         ).orElseThrow();
     }
 

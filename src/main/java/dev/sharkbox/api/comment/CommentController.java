@@ -1,7 +1,7 @@
 package dev.sharkbox.api.comment;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import dev.sharkbox.api.common.PageResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -35,8 +35,8 @@ public class CommentController {
 
     @GetMapping("/{threadId}")
     @Operation(summary = "Retrieve comments in a thread")
-    public Page<Comment> retrieveComments(@PathVariable Long threadId, Pageable pageable, @AuthenticationPrincipal SharkboxUser user) {
-        return commentService.retrieveComments(threadId, pageable, user);
+    public PageResponse<Comment> retrieveComments(@PathVariable Long threadId, Pageable pageable, @AuthenticationPrincipal SharkboxUser user) {
+        return PageResponse.of(commentService.retrieveComments(threadId, pageable, user));
     }
 
     @PostMapping("/{threadId}")

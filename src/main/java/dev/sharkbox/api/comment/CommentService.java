@@ -30,7 +30,7 @@ public class CommentService {
     public Page<Comment> retrieveComments(Long threadId, Pageable pageable, SharkboxUser user) {
         Page<Comment> comments = commentRepository.findByThreadId(threadId, pageable);
         return comments.map(comment -> 
-            voteService.populateVoteData(comment, "comment", user.getUserId()));
+            user != null ? voteService.populateVoteData(comment, "comment", user.getUserId()) : comment);
     }
 
     public Comment createComment(CommentForm commentForm, Long threadId, SharkboxUser user) {
@@ -48,6 +48,7 @@ public class CommentService {
             .orElseThrow();
     }
 
+    // TODO permissions checking
     public Comment updateComment(CommentForm commentForm, Long threadId, Long commentId, SharkboxUser user) {
         return commentRepository.findById(commentId)
             .map(comment -> {
