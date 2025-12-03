@@ -5,7 +5,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import dev.sharkbox.api.box.Box;
 
-
 interface ThreadRepository extends JpaRepository<Thread, Long> {
     Page<Thread> findByBox(Box box, Pageable pageable);
+
+    Page<Thread> findByUserId(String userId, Pageable pageable);
 }

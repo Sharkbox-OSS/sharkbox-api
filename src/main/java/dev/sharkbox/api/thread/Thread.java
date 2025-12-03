@@ -4,6 +4,7 @@ import java.time.OffsetDateTime;
 
 import dev.sharkbox.api.box.Box;
 import dev.sharkbox.api.vote.VotableEntity;
+import org.hibernate.annotations.Formula;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,7 +20,7 @@ import jakarta.validation.constraints.NotNull;
 @Entity
 @Table(name = "thread")
 public class Thread extends VotableEntity {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -38,6 +39,8 @@ public class Thread extends VotableEntity {
 
     private String description;
 
+    @Formula("(SELECT count(*) FROM comment c WHERE c.thread_id = id)")
+    private Long commentCount;
 
     @NotNull
     private String userId;
@@ -98,6 +101,14 @@ public class Thread extends VotableEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Long getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(Long commentCount) {
+        this.commentCount = commentCount;
     }
 
     public String getUserId() {

@@ -2,12 +2,18 @@ package dev.sharkbox.api.comment;
 
 import java.time.OffsetDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import dev.sharkbox.api.thread.Thread;
 import dev.sharkbox.api.vote.VotableEntity;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -26,8 +32,10 @@ public class Comment extends VotableEntity {
     @NotNull
     private String userId;
 
-    @NotNull
-    private Long threadId;
+    @ManyToOne
+    @JoinColumn(name = "thread_id")
+    @JsonIgnore
+    private Thread thread;
 
     @NotEmpty
     private String content;
@@ -62,12 +70,27 @@ public class Comment extends VotableEntity {
         this.userId = userId;
     }
 
-    public Long getThreadId() {
-        return threadId;
+    public Thread getThread() {
+        return thread;
     }
 
-    public void setThreadId(Long threadId) {
-        this.threadId = threadId;
+    public void setThread(Thread thread) {
+        this.thread = thread;
+    }
+
+    @JsonProperty("threadId")
+    public Long getThreadId() {
+        return thread != null ? thread.getId() : null;
+    }
+
+    @JsonProperty("threadTitle")
+    public String getThreadTitle() {
+        return thread != null ? thread.getTitle() : null;
+    }
+
+    @JsonProperty("threadBoxSlug")
+    public String getThreadBoxSlug() {
+        return thread != null && thread.getBox() != null ? thread.getBox().getSlug() : null;
     }
 
     public String getContent() {

@@ -46,7 +46,8 @@ public class ThreadController {
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(code = HttpStatus.CREATED)
     @Operation(summary = "Create a thread in a box")
-    public Thread createThread(@RequestBody @Valid ThreadForm form, @PathVariable String slug, @AuthenticationPrincipal SharkboxUser user) {
+    public Thread createThread(@RequestBody @Valid ThreadForm form, @PathVariable String slug,
+            @AuthenticationPrincipal SharkboxUser user) {
         return threadService.createThread(form, slug, user);
     }
 
@@ -54,13 +55,15 @@ public class ThreadController {
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(code = HttpStatus.OK)
     @Operation(summary = "Update a thread")
-    public Thread updateThread(@RequestBody @Valid ThreadForm form, @PathVariable Long id) {
-        return threadService.updateThread(form, null, id);
+    public Thread updateThread(@RequestBody @Valid ThreadForm form, @PathVariable Long id,
+            @AuthenticationPrincipal SharkboxUser user) {
+        return threadService.updateThread(form, null, id, user);
     }
 
     @GetMapping("/box/{slug}/threads")
     @Operation(summary = "Retrieve threads in a box")
-    public PageResponse<Thread> retrieveThreads(@PathVariable String slug, Pageable pageable, @AuthenticationPrincipal SharkboxUser user) {
+    public PageResponse<Thread> retrieveThreads(@PathVariable String slug, Pageable pageable,
+            @AuthenticationPrincipal SharkboxUser user) {
         return PageResponse.of(threadService.retrieveThreads(slug, pageable, user));
     }
 
@@ -68,7 +71,8 @@ public class ThreadController {
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(code = HttpStatus.OK)
     @Operation(summary = "Vote on a thread")
-    public Thread voteOnThread(@PathVariable Long id, @RequestBody @Valid VoteForm form, @AuthenticationPrincipal SharkboxUser user) {
+    public Thread voteOnThread(@PathVariable Long id, @RequestBody @Valid VoteForm form,
+            @AuthenticationPrincipal SharkboxUser user) {
         return threadService.voteOnThread(id, form, user);
     }
 }
